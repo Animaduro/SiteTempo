@@ -1,22 +1,24 @@
 const express = require("express");
 const axios = require("axios");
-const cors = require("cors");
-
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.static("public")); // serve os arquivos do frontend
+// SERVIR ARQUIVOS ESTÁTICOS DA PASTA PUBLIC
+app.use(express.static("public"));
 
+// Cidades que o professor pediu
 const cidades = [
   { nome: "São Paulo", query: "Sao Paulo" },
   { nome: "Damasco", query: "Damascus" },
   { nome: "Bangladesh", query: "Dhaka" }
 ];
 
+// Rota principal da API
 app.get("/clima", async (req, res) => {
   try {
     const resultados = [];
+
     for (let cidade of cidades) {
       const url = `https://wttr.in/${cidade.query}?format=j1`;
       const response = await axios.get(url);
@@ -31,6 +33,7 @@ app.get("/clima", async (req, res) => {
         descricao: data.weatherDesc[0].value
       });
     }
+
     res.json(resultados);
   } catch (error) {
     console.error(error.message);
@@ -38,6 +41,12 @@ app.get("/clima", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+// IMPORTANTE: para o frontend funcionar com rotas no Express, envie o index.html para qualquer rota não tratada
+app.get("*", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
 });
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
+
