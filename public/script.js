@@ -1,6 +1,6 @@
 async function carregarClima() {
   try {
-    const response = await fetch("http://localhost:3000/clima");
+    const response = await fetch("/clima");
     const dados = await response.json();
 
     const container = document.getElementById("clima-container");
@@ -26,3 +26,4 @@ async function carregarClima() {
 }
 
 carregarClima();
+
